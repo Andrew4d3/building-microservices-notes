@@ -93,7 +93,7 @@ Picking a small number of defined interface technologies helps integrate new con
 
 ---
 
-## When it comes to Interfaces, what is important to keep in mind?
+## When it comes to Architectural Safety, what is important to keep in mind?
 
 Playing by the rules is important when it comes to response codes, too. If your circuit breakers rely on HTTP codes, and one service decides to send back 2XX codes for errors, or confuses 4XX codes with 5XX codes, then these safety measures can fall apart.
 

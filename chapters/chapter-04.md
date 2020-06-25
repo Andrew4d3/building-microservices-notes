@@ -97,3 +97,128 @@ completely hidden, and ensure that you can evolve the server interface without h
 that a network call is going to be made
 
 ---
+
+## In REST, what does a "Resource" mean?
+
+Most important is the concept of resources. You can think of a resource as a thing
+that the service itself knows about, like a `Customer`. The server creates different representations of this `Customer` on request. How a resource is shown externally is completely decoupled from how it is stored internally. A client might ask for a JSON
+representation of a `Customer`, for example, even if it is stored in a completely different
+format. Once a client has a representation of this `Customer`, it can then make requests
+to change it, and the server may or may not comply with them.
+
+## What's the idea behind HATEOAS?
+
+The idea behind HATEOAS is that clients should perform interactions (potentially leading to state transitions) with the server via these links (hypermedia controls) to other resources. It doesn’t need to know where exactly customers live on the server by knowing which URI to hit; instead, the client looks for and navigates links to find what it needs.
+
+## Explain this HEATEOAS example...
+
+```
+<album>
+   <name>Give Blood</name>
+   <link rel="/artist" href="/artist/theBrakes" />
+   <description>
+      Awesome, short, brutish, funny and loud. Must buy!
+   </description>
+   <link rel="/instantpurchase" href="/instantPurchase/1234" />
+</album>
+```
+
+-  This hypermedia control shows us where to find information about the artist.
+-  And if we want to purchase the album, we now know where to go.
+
+---
+
+## What's one of the benefits of using HEATEOAS?
+
+Using these controls to decouple the client and server yields significant benefits over
+time that greatly offset the small increase in the time it takes to get these protocols up
+and running. By following the links, the client gets to progressively discover the API,
+which can be a really handy capability when we are implementing new clients.
+
+---
+
+## What's one of the downsides of using HEATEOAS?
+
+One of the downsides is that this navigation of controls can be quite chatty, as the
+client needs to follow links to find the operation it wants to perform.
+
+---
+
+## What pattern can we use when deciding how to store our data?
+
+There is a more general problem at play here. How we decide to store our data, and
+how we expose it to our consumers, can easily dominate our thinking. One pattern I
+saw used effectively by one of our teams was to delay the implementation of proper
+persistence for the microservice, until the interface had stabilized enough.
+
+---
+
+## Book for learning more about REST
+
+Despite these disadvantages, REST over HTTP is a sensible default choice for serviceto-service interactions. If you want to know more, I recommend REST in Practice
+(O’Reilly), which covers the topic of REST over HTTP in depth.
+
+---
+
+## How should we keep our middlewares? (message brokers, queues)
+
+However, vendors tend to want to package lots of software with them, which can lead
+to more and more smarts being pushed into the middleware, as evidenced by things
+like the Enterprise Service Bus. Make sure you know what you’re getting: keep your
+middleware dumb, and keep the smarts in the endpoints.
+
+---
+
+## Which strategy did Sam Newman use to view bad messages in the pricing system he worked on?
+
+Aside from the bug itself, we’d failed to specify a maximum retry limit for the job on
+the queue. We fixed the bug itself, and also configured a maximum retry. But we also
+realized we needed a way to view, and potentially replay, these bad messages. We
+ended up having to implement a message hospital (or dead letter queue), where messages got sent if they failed. We also created a UI to view those messages and retry
+them if needed. These sorts of problems aren’t immediately obvious if you are only
+familiar with synchronous point-to-point communication.
+
+---
+
+## What should we ensure to have if we end up adopting event-driven architectures?
+
+The associated complexity with event-driven architectures and asynchronous programming in general leads me to believe that you should be cautious in how eagerly
+you start adopting these ideas. Ensure you have good monitoring in place, and
+strongly consider the use of correlation IDs, which allow you to trace requests across
+process boundaries
+
+---
+
+## What does happen when you introduce shared code outside your service boundary and how does RealEstate.com.au deal with it?
+
+If your use of shared code ever leaks outside your service boundary, you have introduced a potential form of coupling. Using common code like logging libraries is fine,
+as they are internal concepts that are invisible to the outside world. RealEstate.com.au
+makes use of a tailored service template to help bootstrap new service creation.
+Rather than make this code shared, the company copies it for every new service to
+ensure that coupling doesn’t leak in.
+
+---
+
+## What's the general rule of thumb when sharing code in microservices? (DRY)
+
+My general rule of thumb: don’t violate DRY within a microservice, but be relaxed
+about violating DRY across all services
+
+---
+
+## What's the problem of creeping logic into a client library?
+
+The more logic that creeps into the client library, the more
+cohesion starts to break down, and you find yourself having to change multiple clients to roll out fixes to your server.
+
+---
+
+## What's the model of AWS when using client libraries?
+
+A model for client libraries I like is the one for Amazon Web Services (AWS). The
+underlying SOAP or REST web service calls can be made directly, but everyone ends
+up using just one of the various software development kits (SDKs) that exist, which
+provide abstractions over the underlying API. These SDKs, though, are written by the
+community or AWS people other than those who work on the API itself. This degree
+of separation seems to work, and avoids some of the pitfalls of client libraries. Part of
+the reason this works so well is that the client is in charge of when the upgrade happens. If you go down the path of client libraries yourself, make sure this is the case.

@@ -106,6 +106,8 @@ representation of a `Customer`, for example, even if it is stored in a completel
 format. Once a client has a representation of this `Customer`, it can then make requests
 to change it, and the server may or may not comply with them.
 
+---
+
 ## What's the idea behind HATEOAS?
 
 The idea behind HATEOAS is that clients should perform interactions (potentially leading to state transitions) with the server via these links (hypermedia controls) to other resources. It doesn’t need to know where exactly customers live on the server by knowing which URI to hit; instead, the client looks for and navigates links to find what it needs.
@@ -222,3 +224,186 @@ provide abstractions over the underlying API. These SDKs, though, are written by
 community or AWS people other than those who work on the API itself. This degree
 of separation seems to work, and avoids some of the pitfalls of client libraries. Part of
 the reason this works so well is that the client is in charge of when the upgrade happens. If you go down the path of client libraries yourself, make sure this is the case.
+
+---
+
+## What could happen after we retrieve a resource from a specific service? (e.g Customer resource)
+
+When we retrieve a given Customer resource from the customer service, we get to see
+what that resource looked like when we made the request. It is possible that after we
+requested that Customer resource, something else has changed it. What we have in
+effect is a memory of what the Customer resource once looked like. The longer we
+hold on to this memory, the higher the chance that this memory will be false.
+
+---
+
+## In event-based collaboration. What could be valuable to have if we want to know what happend with a specific resource? (e.g Customer resource)
+
+With events, we’re saying this happened, but we need to know what happened. If we’re
+receiving updates due to a Customer resource changing, for example, it could be valuable to us to know what the Customer looked like when the event occurred. As long
+as we also get a reference to the entity itself so we can look up its current state, then
+we can get the best of both worlds.
+
+---
+
+## Which mechanisms can we used to reduce load in our services when we need to retrieve some resource information?
+
+If we provide additional information when the resource is retrieved, letting us know at what
+time the resource was in the given state and perhaps how long we can consider this
+information to be fresh, then we can do a lot with caching to reduce load.
+
+---
+
+## What does the "Postel's law consist in?
+
+The example of a client trying to be as flexible as possible in consuming a service
+demonstrates Postel’s Law (otherwise known as the robustness principle), which states:
+“Be conservative in what you do, be liberal in what you accept from others.”
+
+---
+
+## Explain semantic versioning. What is about?
+
+With semantic versioning, each version number is in the form
+MAJOR.MINOR.PATCH. When the MAJOR number increments, it means that backward
+incompatible changes have been made. When MINOR increments, new functionality
+has been added that should be backward compatible. Finally, a change to PATCH states
+that bug fixes have been made to existing functionality
+
+---
+
+## Explain a simple use case when working with semantic versioning
+
+Our helpdesk application is built to work against version 1.2.0 of the customer service. If a
+new feature is added, causing the customer service to change to 1.3.0, our helpdesk
+application should see no change in behavior and shouldn’t be expected to make any
+changes. We couldn’t guarantee that we could work against version 1.1.0 of the customer service, though, as we may rely on functionality added in the 1.2.0 release. We
+could also expect to have to make changes to our application if a new 2.0.0 release of
+the customer service comes out.
+
+---
+
+## When introducing a breaking interface change, how can we use our endpoints to handle this issue?
+
+One approach I have used successfully to handle this is to coexist both the old and new interfaces in the same running service. So if we want to release a breaking change, we deploy a new version of the service that exposes both the old and new versions of the endpoint.
+
+---
+
+## When coexisting different endpoint versions, things can get messy, with a lot of duplicated code, additional tests, etc. How can we work around this?
+
+One approach I have used successfully to handle this is to coexist both the old and new interfaces in the same running service. So if we want to release a breaking change, we deploy a new version of the service that exposes both the old and new versions of the endpoint.
+
+---
+
+## When introducing a breaking interface change, how can we use our services to handle this issue?
+
+Another versioning solution often cited is to have different versions of the service live
+at once, and for older consumers to route their traffic to the older version, with newer
+versions seeing the new one.
+
+---
+
+## What problems could we have when using multiple concurrent service versions?
+
+if I need to fix an internal bug in my service, I now have to fix and deploy two different sets of services. This would probably mean I have to branch the codebase for my
+service, and this is always problematic. Second, it means I need smarts to handle
+directing consumers to the right microservice.
+
+---
+
+## Which could be a good rule when deciding which approach to take when dealing with breaking interface changes?
+
+The longer it takes for you to get consumers upgraded to the newer version and released,
+the more you should look to coexist different endpoints in the same microservice
+rather than coexist entirely different versions.
+
+---
+
+## When it comes to our user interfaces. How should we adapt our core services?
+
+So, although our core services —our core offering— might be the same, we need a way
+to adapt them for the different constraints that exist for each type of interface.
+
+---
+
+## Explain UI Fragment Composition
+
+Rather than having our UI make API calls and map everything back to UI controls,
+we could have our services provide parts of the UI directly, and then just pull these
+fragments in to create a UI. Imagine, for example, that the recommendation service provides a recommendation widget that is combined with other
+controls or UI fragments to create an overall UI. It might get rendered as a box on a
+web page along with other content.
+
+---
+
+## What's an API gateway?
+
+A common solution to the problem of chatty interfaces with backend services, or the
+need to vary content for different types of devices, is to have a server-side aggregation
+endpoint, or API gateway. This can marshal multiple backend calls, vary and aggregate content if needed for different devices, and serve it up.
+
+---
+
+## What problems could we have when using unique API gateways and which pattern can we use to resolve them?
+
+The problem that can occur is that normally we’ll have one giant layer for all our
+services. This leads to everything being thrown in together, and suddenly we start to
+lose isolation of our various user interfaces, limiting our ability to release them independently. A model I prefer and that I’ve seen work well is to restrict the use of these
+backends to one specific user interface or application, as we see in Figure 4-10.
+
+![image](https://user-images.githubusercontent.com/1868409/85929062-b11c4a00-b87f-11ea-9d0e-9019a71740da.png)
+
+---
+
+## Which dangers do we have when using BFF's?
+
+The danger with this approach is the same as with any aggregating layer; it can take
+on logic it shouldn’t. The business logic for the various capabilities these backends use
+should stay in the services themselves. These BFFs should only contain behavior specific to delivering a particular user experience.
+
+---
+
+## When deciding the inclusion of new software... “Should I build, or should I buy?”
+
+My clients often struggle with the question “Should I build, or should I buy?” In general, the advice I and my colleagues give when having this conversation with the average enterprise organization boils down to “Build if it is unique to what you do, and
+can be considered a strategic asset; buy if your use of the tool isn’t that special.”
+
+---
+
+## How can we work around CMS's in our microservice systems?
+
+The answer? Front the CMS with your own service that provides the website to the
+outside world, as shown in Figure 4-11. Treat the CMS as a service whose role is to
+allow for the creation and retrieval of content. In your own service, you write the
+code and integrate with services how you want. You have control over scaling the
+website (many commercial CMSes provide their own proprietary add-ons to handle
+load), and you can pick the templating system that makes sense.
+
+![image](https://user-images.githubusercontent.com/1868409/85929253-5388fd00-b881-11ea-99c7-5614f6c4e879.png)
+
+---
+
+## How can we work around CRM's in our microservice systems?
+
+The first thing we did was identify the core concepts to our domain that the CRM
+system currently owned. One of these was the concept of a project — that is, something
+to which a member of staff could be assigned. Multiple other systems needed project
+information. What we did was instead create a project service. This service exposed
+projects as RESTful resources, and the external systems could move their integration
+points over to the new, easier-to-work-with service. Internally, the project service was
+just a façade, hiding the detail of the underlying integration (the CRM itself). You can see this in
+Figure 4-12.
+
+![image](https://user-images.githubusercontent.com/1868409/85929360-1bce8500-b882-11ea-966d-c705e266fbf1.png)
+
+---
+
+## What is the Strangler Application Pattern?
+
+A useful pattern here is the Strangler Application Pattern.
+Much like with our example of fronting the CMS system with our own code, with a
+strangler you capture and intercept calls to the old system. This allows you to decide
+if you route these calls to existing, legacy code, or direct them to new code you may have written. This allows you to replace functionality over time without requiring a
+big bang rewrite.
+
+---

@@ -291,7 +291,7 @@ One approach I have used successfully to handle this is to coexist both the old 
 
 ## When coexisting different endpoint versions, things can get messy, with a lot of duplicated code, additional tests, etc. How can we work around this?
 
-One approach I have used successfully to handle this is to coexist both the old and new interfaces in the same running service. So if we want to release a breaking change, we deploy a new version of the service that exposes both the old and new versions of the endpoint.
+To make this more manageable, we internally transformed all requests to the V1 endpoint to a V2 request, and then V2 requests to the V3 endpoint. This meant we could clearly delineate what code was going to be retired when the old endpoint(s) died.
 
 ---
 

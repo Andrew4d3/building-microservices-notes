@@ -5,7 +5,7 @@
 ## What are seams and why are they important to identify?
 
 In his book Working Eectively with Legacy Code (Prentice-Hall), Michael Feathers
-defines the concept of a seam—that is, a portion of the code that can be treated in
+defines the concept of a seam — that is, a portion of the code that can be treated in
 isolation and worked on without impacting the rest of the codebase. We also want to
 identify seams. But rather than finding them for the purpose of cleaning up our codebase, we want to identify seams that can become service boundaries.
 
@@ -50,9 +50,9 @@ Figure 5-3.
 
 ## How can we share static data (e.g country codes) using microservices? (Hint: There are three ways)
 
-- Well, we have a few options. One is to duplicate this table for each of our packages, with the long-term view that it will be duplicated within each service also. (Downside: updating multiple tables when new static data is avalable)
-- A second option is to instead treat this shared, static data as code. Perhaps it could bein a property file deployed as part of the service, or perhaps just as an enumeration. (Downside: same as before, but at least updating code has shown to be easir than updating a DB table/collection)
-- A third option, which may well be extreme, is to push this static data into a service of its own right. (Downside: Overkill solution when the amount of static data is not that big and not that complex)
+-  Well, we have a few options. One is to duplicate this table for each of our packages, with the long-term view that it will be duplicated within each service also. (Downside: updating multiple tables when new static data is avalable)
+-  A second option is to instead treat this shared, static data as code. Perhaps it could be in a property file deployed as part of the service, or perhaps just as an enumeration. (Downside: same as before, but at least updating code has shown to be easier than updating a DB table/collection)
+-  A third option, which may well be extreme, is to push this static data into a service of its own right. (Downside: Overkill solution when the amount of static data is not that big and not that complex)
 
 ---
 
@@ -67,3 +67,28 @@ Customer code to other packages, such as finance or warehouse. Rolling this all 
 
 ---
 
+## We have the following situation: Our catalog needs to store the name and price of the records we sell, and the warehouse needs to keep an electronic record of inventory. We decide to keep these two things in the same place in a generic line item table. How can we break this down?
+
+![image](https://user-images.githubusercontent.com/1868409/86195684-7df7e600-bb1f-11ea-87b5-8847e4ac01f5.png)
+
+The answer here is to split the table in two as we have in Figure 5-8, perhaps creating
+a stock list table for the warehouse, and a catalog entry table for the catalog details.
+
+![image](https://user-images.githubusercontent.com/1868409/86195790-ac75c100-bb1f-11ea-92ef-2b52e7d8593a.png)
+
+---
+
+## What's the best way to split our schemas so that we can avoid doing a "big-bang release"?
+
+What next? Do you do a big-bang release, going from one monolithic service with a single schema to two services, each with its own schema? I would actually
+recommend that you split out the schema but keep the service together before splitting the application code out into separate microservices, as shown in Figure 5-9.
+
+![image](https://user-images.githubusercontent.com/1868409/86196115-856bbf00-bb20-11ea-939a-aa8a6b935646.png)
+
+---
+
+## Which benefits do we get by spliting our schemas first (staging the break)?
+
+By splitting the schemas out but keeping the application code together, we give ourselves the ability to revert our changes or continue to
+tweak things without impacting any consumers of our service. Once we are satisfied
+that the DB separation makes sense, we can then think about splitting out the application code into two services.

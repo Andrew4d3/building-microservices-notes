@@ -10,3 +10,4 @@ Book available for purchase [here](https://www.amazon.com/-/es/Sam-Newman/dp/149
 -  [Chapter 2: The Evolutionary Architect](/chapters/chapter-02.md)
 -  [Chapter 3: How to Model Services](/chapters/chapter-03.md)
 -  [Chapter 4: Integration](/chapters/chapter-04.md)
+-  [Chapter 5: Splitting the Monolith](/chapters/chapter-05.md)

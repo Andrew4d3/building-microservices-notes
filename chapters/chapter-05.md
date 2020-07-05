@@ -205,3 +205,29 @@ broadcast as events, and it may not scale as well as a data pump for larger volu
 data that has the benefit of operating directly at the database level. Nonetheless, the
 looser coupling and fresher data available via such an approach makes it strongly
 worth considering if you are already exposing the appropriate events.
+
+---
+
+## What solution does Netflix implement using "Backup Data Pumps"?
+
+In the end, Netflix ended up implementing a pipeline capable of processing large amounts of data using this approach, which it then open sourced as the
+**Aegisthus project**.
+
+---
+
+## Which technique can we use to mitigate the cost of change asossiated with spliting a monolith?
+
+A great technique here is to adapt an approach more typically taught for the design of
+object-oriented systems: class-responsibility-collaboration (CRC) cards. With CRC
+cards, you write on one index card the name of the class, what its responsibilities are,
+and who it collaborates with. When working through a proposed design, for each service I list its responsibilities in terms of the capabilities it provides, with the collaboators specified in the diagram. As you work through more use cases, you start to get
+a sense as to whether all of this hangs together properly.
+
+---
+
+## Part of the problem is knowing where to start, and I’m hoping this chapter has helped. But another challenge is the cost associated with splitting out services. Finding somewhere to run the service, spinning up a new service stack, and so on, are non‐trivial tasks. So how do we address this?
+
+Well, if doing something is right but difficult,
+we should strive to make things easier. Investment in libraries and lightweight service
+frameworks can reduce the cost associated with creating the new service. Giving people access to self-service provision virtual machines or even making a platform as a
+service (PaaS) available will make it easier to provision systems and test them.

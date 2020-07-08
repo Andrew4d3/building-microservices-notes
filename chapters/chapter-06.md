@@ -49,3 +49,34 @@ box, and changes things independently of what is in source control? This problem
 often called conguration drift — the code in source control no longer reflects the configuration of the running host.
 
 ---
+
+## How does PaaS work?
+
+When using a platform as a service (PaaS), you are working at a higher-level abstraction than at a single host. Most of these platforms rely on taking a technology-specific
+artifact, such as a Java WAR file or Ruby gem, and automatically provisioning and
+running it for you. Some of these platforms will transparently attempt to handle scaling the system up and down for you, although a more common (and in my experience less error-prone) way will allow you some control over how many nodes your
+service might run on, but it handles the rest.
+
+---
+
+## Disavantages of using PaaS solutions
+
+When PaaS solutions work well, they work very well indeed. However, when they
+don’t quite work for you, you often don’t have much control in terms of getting under
+the hood to fix things. This is part of the trade-off you make. I would say that in my
+experience the smarter the PaaS solutions try to be, the more they go wrong. I’ve used
+more than one PaaS that attempts to autoscale based on application use, but does it
+badly.
+
+---
+
+## Why slicing up a phisical machine into multiple VM's might not be a good idea?
+
+Well, for some people, you can. However, slicing up the machine into ever increasing
+VMs isn’t free. Think of our physical machine as a sock drawer. If we put lots of
+wooden dividers into our drawer, can we store more socks or fewer? The answer is
+fewer: the dividers themselves take up room too! Our drawer might be easier to deal
+with and organize, and perhaps we could decide to put T-shirts in one of the spaces
+now rather than just socks, but more dividers means less overall space.
+
+---

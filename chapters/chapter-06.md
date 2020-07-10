@@ -80,3 +80,12 @@ with and organize, and perhaps we could decide to put T-shirts in one of the spa
 now rather than just socks, but more dividers means less overall space.
 
 ---
+
+## Which tool can we use to define the infraestructure of a system?
+
+Building a system like this required a significant amount of work. The effort is often
+front-loaded, but can be essential to manage the deployment complexity you have. I
+hope in the future you won’t have to do this yourself. **Terraform** is a very new tool
+from Hashicorp, which works in this space.
+
+---

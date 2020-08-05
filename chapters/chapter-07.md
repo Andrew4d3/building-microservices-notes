@@ -80,3 +80,103 @@ different process that are the culprit here.
 In “Eradicating Non-Determinism in Tests”, Martin Fowler advocates the approach
 that if you have flaky tests, you should track them down and if you can’t immediately
 fix them, remove them from the suite so you can treat them.
+
+---
+
+## When is it good to remove a e2e test?
+
+When it comes to the
+larger-scoped test suites, however, this is exactly what we need to be able to do. If the
+same feature is covered in 20 different tests, perhaps we can get rid of half of them, as
+those 20 tests take 10 minutes to run!
+
+---
+
+## Instead of including a e2e test for each new piece of functionality, which other approach can we take?
+
+The best way to counter this is to focus on a small number of core journeys to test for
+the whole system. Any functionality not covered in these core journeys needs to be
+covered in tests that analyze services in isolation from each other. These journeys
+need to be mutually agreed upon, and jointly owned. For our music shop, we might
+focus on actions like ordering a CD, returning a product, or perhaps creating a new
+customer—high-value interactions and very few in number.
+
+---
+
+## Explain CDC (Consumer-Driven Contracts)
+
+With CDCs, we are defining the expectations of a consumer on a service (or producer). The expectations of the consumers are captured in code form as tests, which
+are then run against the producer. If done right, these CDCs should be run as part of
+the CI build of the producer, ensuring that it never gets deployed if it breaks one of
+these contracts.
+
+---
+
+## So Should You Use End-to-End Tests?
+
+You can view running end-to-end tests prior to production deployment as training
+wheels. While you are learning how CDCs work, and improving your production
+monitoring and deployment techniques, these end-to-end tests may form a useful
+safety net, where you are trading off cycle time for decreased risk. But as you improve
+those other areas, you can start to reduce your reliance on end-to-end tests to the
+point where they are no longer needed.
+
+---
+
+## What's a smoke test suite?
+
+A common example of this is
+the smoke test suite, a collection of tests designed to be run against newly deployed
+software to confirm that the deployment worked. These tests help you pick up any
+local environmental issues.
+
+---
+
+## What's a blue/green deployment?
+
+Another example of this is what is called blue/green deployment. With blue/green, we
+have two copies of our software deployed at a time, but only one version of it is
+receiving real requests.
+Let’s consider a simple example, seen in Figure 7-12. In production, we have v123 of
+the customer service live. We want to deploy a new version, v456. We deploy this
+alongside v123, but do not direct any traffic to it. Instead, we perform some testing in
+situ against the newly deployed version. Once the tests have worked, we direct the
+production load to the new v456 version of the customer service. It is common to
+keep the old version around for a short period of time, allowing for a fast fallback if
+you detect any errors.
+
+![image](https://user-images.githubusercontent.com/1868409/89364152-da5ea000-d69f-11ea-85c3-bb6b400676ae.png)
+
+---
+
+## What's canary releasing?
+
+With canary releasing, we are verifying our newly deployed software by directing
+amounts of production traffic against the system to see if it performs as expected.
+“Performing as expected” can cover a number of things, both functional and non‐
+functional. For example, we could check that a newly deployed service is responding
+to requests within 500ms, or that we see the same proportional error rates from the
+new and the old service.
+
+---
+
+## What do you need to decide when considering canary releasing? (about the requests)
+
+When considering canary releasing, you need to decide if you are going to divert a
+portion of production requests to the canary or just copy production load. Some
+teams are able to shadow production traffic and direct it to their canary. In this way,
+the existing production and canary versions can see exactly the same requests, but
+only the results of the production requests are seen externally. This allows you to do a
+side-by-side comparison while eliminating the chance that a failure in the canary can
+be seen by a customer request.
+
+---
+
+## Explain the trade-offs between MTBF and MTTR?
+
+Sometimes expending the same effort into getting better at remediation of a release
+can be significantly more beneficial than adding more automated functional tests. In
+the web operations world, this is often referred to as the trade-off between optimizing
+for mean time between failures (MTBF) and mean time to repair (MTTR).
+
+---

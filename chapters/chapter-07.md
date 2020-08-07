@@ -180,3 +180,42 @@ the web operations world, this is often referred to as the trade-off between opt
 for mean time between failures (MTBF) and mean time to repair (MTTR).
 
 ---
+
+## What are nonfunctional requirements?
+
+Nonfunctional
+requirements is an umbrella term used to describe those characteristics your system
+exhibits that cannot simply be implemented like a normal feature. They include
+aspects like the acceptable latency of a web page, the number of users a system should
+support, how accessible your user interface should be to people with disabilities, or
+how secure your customer data should be.
+
+---
+
+## What should you ensure to measure in your performance tests?
+
+To generate worthwhile results, you’ll often need to run given scenarios with gradu‐
+ally increasing numbers of simulated customers. This allows you to see how latency of
+calls varies with increasing load. This means that performance tests can take a while
+to run. In addition, you’ll want the system to match production as closely as possible, to ensure that the results you see will be indicative of the performance you can expect
+on the production systems.
+
+---
+
+## When it comes to our performance test results, what's important to consider?
+
+And make sure you also look at the results! I’ve been very surprised by the number of
+teams I have encountered who have spent a lot of work implementing tests and run‐
+ning them, and never check the numbers. Often this is because people don’t know
+what a good result looks like. You really need to have targets. This way, you can make
+the build go red or green based on the results, with a red (failing) build being a clear
+call to action.
+
+---
+
+## Two points about CDC and E2E tests...
+
+-  Avoid the need for end-to-end tests wherever possible by using consumer-driven
+   contracts.
+-  Use consumer-driven contracts to provide focus points for conversations
+   between teams.

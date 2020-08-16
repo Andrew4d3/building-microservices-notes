@@ -12,3 +12,5 @@ Book available for purchase [here](https://www.amazon.com/-/es/Sam-Newman/dp/149
 -  [Chapter 4: Integration](/chapters/chapter-04.md)
 -  [Chapter 5: Splitting the Monolith](/chapters/chapter-05.md)
 -  [Chapter 6: Deployment](/chapters/chapter-06.md)
+-  [Chapter 7: Testing](/chapters/chapter-07.md)
+-  [Chapter 8: Monitoring](/chapters/chapter-08.md)

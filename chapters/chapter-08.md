@@ -129,3 +129,44 @@ have all your metrics in one place, and you may want to have a list of standard 
 for your metrics too; it would be very annoying for one service to have a metric called
 ResponseTime, and another to have one called RspTimeSecs, when they mean the
 same thing.
+
+---
+
+## What questions do we have to make when thinking about our monitoring metrics?
+
+What our people want to see and react to right now is different than what they need
+when drilling down. So, for the type of person who will be looking at this data, consider the following:
+
+-  What they need to know right now
+-  What they might want later
+-  How they like to consume data
+
+---
+
+## Good book for the graphical display of quantitative information
+
+A discussion about all the nuances involved in the graphical display of quantita‐
+tive information is certainly outside the scope of this book, but a great place to start is
+Stephen Few’s excellent book Information Dashboard Design: Displaying Data for Ata-Glance Monitoring (Analytics Press).
+
+---
+
+## Two things to consider when monitoring one service
+
+-  Track inbound response time at a bare minimum. Once you’ve done that, follow
+   with error rates and then start working on application-level metrics.
+-  Track the health of all downstream responses, at a bare minimum including the
+   response time of downstream calls, and at best tracking error rates.
+
+---
+
+## Four things to consider when monitoring the whole system
+
+-  Ensure your metric storage tool allows for aggregation at a system or service
+   level, and drill down to individual hosts.
+-  Ensure your metric storage tool allows you to maintain data long enough to
+   understand trends in your system.
+-  Understand what requires a call to action, and structure alerting and dashboards
+   accordingly.
+-  Investigate the possibility of unifying how you aggregate all of your various met‐
+   rics by seeing if a tool like Suro or Riemann makes sense for you.

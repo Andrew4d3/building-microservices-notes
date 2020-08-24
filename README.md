@@ -14,3 +14,4 @@ Book available for purchase [here](https://www.amazon.com/-/es/Sam-Newman/dp/149
 -  [Chapter 6: Deployment](/chapters/chapter-06.md)
 -  [Chapter 7: Testing](/chapters/chapter-07.md)
 -  [Chapter 8: Monitoring](/chapters/chapter-08.md)
+-  [Chapter 9: Security](/chapters/chapter-09.md)

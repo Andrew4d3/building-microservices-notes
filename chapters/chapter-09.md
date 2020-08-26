@@ -121,3 +121,111 @@ that he shouldn’t be able to. For example, as a customer, when I log in to the
 shopping system, I can see my account details. What if I could trick the online shop‐
 ping UI into making a request for someone else’s details, maybe by making a call with
 my logged-in credentials?
+
+---
+
+## Which encryption algorithmns should you use?
+
+For encryption at rest, unless you have a very good reason for picking something else,
+pick a well-known implementation of AES-128 or AES-256 for your platform
+
+---
+
+## What techniche should you use for securing your stored passwords?
+
+For passwords, you should consider using a technique called salted password hashing.
+
+---
+
+## How should we store or keys to access our databases and services?
+
+One solution is to use a separate security appliance to encrypt and decrypt data.
+Another is to use a separate key vault that your service can access when it needs a key.
+The lifecycle management of the keys (and access to change them) can be a vital
+operation, and these systems can handle this for you.
+
+---
+
+## Explain: "Decrypt on Demand"
+
+Encrypt data when you first see it. Only decrypt on demand, and ensure that data is
+never stored anywhere.
+
+---
+
+## What do we have to do in order to keep our backups safe?
+
+So it may seem like an obvious point, but we need to make sure that our
+backups are also encrypted. This also means that we need to know which keys are
+Securing Data at Rest
+needed to handle which version of data, especially if the keys change. Having clear
+key management becomes fairly important.
+
+---
+
+## When it comes to security. How can our logs help us out?
+
+Good logging, and specifically the ability to aggregate logs from multiple systems, is
+not about prevention, but can help with detecting and recovering from bad things
+happening. For example, after applying security patches you can often see in logs if
+people have been exploiting certain vulnerabilities. Patching makes sure it won’t hap‐
+pen again, but if it already has happened, you may need to go into recovery mode.
+Having logs available allows you to see if something bad happened after the fact.
+
+---
+
+## In security, what are IDS and IPS?
+
+Intrusion detection systems (IDS) can monitor networks or hosts for suspicious behav‐
+ior, reporting problems when it sees them. Intrusion prevention systems (IPS), as well
+as monitoring for suspicious activity, can step in to stop it from happening. Unlike a
+firewall, which is primarily looking outward to stop bad things from getting in, IDS
+and IPS are actively looking inside the perimeter for suspect behavior.
+
+---
+
+## In AWS, which technice can we use to segregate our networks?
+
+AWS, for example, provides the ability to automatically provision a virtual private cloud
+(VPC), which allow hosts to live in separate subnets. You can then specify which
+VPCs can see each other by defining peering rules, and even route traffic through
+gateways to proxy access, giving you in effect multiple perimeters at which additional
+security measures can be put into place.
+
+---
+
+## Which two steps should you take when securing OS environment?
+
+-  Here, basic advice can get you a long way. Start with only running services as OS users that have as few permissions as possible, to ensure that if such an account is compromised it will do minimal damage.
+-  Next, patch your software. Regularly. This needs to be automated, and you need to
+   know if your machines are out of sync with the latest patch levels.
+
+---
+
+## How having a microservice architecture can give us much more freedom when implementing our security?
+
+For those parts that deal with the most sensitive information
+or expose the most valuable capabilities, we can adopt the strictest security provi‐
+sions. But for other parts of the system, we can afford to be much more lax in what
+we worry about.
+
+---
+
+## When it comes to storing private data, what do you have to take into account? (hint: The German phrase Datensparsamkeit)
+
+The German phrase Datensparsamkeit represents this concept. Originating from German privacy legislation, it encapsulates the concept of only storing as much information as is absolutely required to fulfill business operations or satisfy local laws.
+
+---
+
+## How can we help to educate developers about security concerns?
+
+Getting people familar with the OWASP Top Ten list and OWASP’s Security Testing Framework can be a great place to start. Specialists absolutely have their place, though, and if you have access to them, use them to help you.
+
+---
+
+## How can we use external parties to assest the security of our system?
+
+With security, I think there is great value in having an external assessment done.
+Exercises like penetration testing, when done by an outside party, really do mimic
+real-world attempts. They also sidestep the issue that teams aren’t always able to see
+the mistakes they have made themselves, as they are too close to the problem.

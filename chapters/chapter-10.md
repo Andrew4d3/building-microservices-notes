@@ -91,3 +91,19 @@ Each squad inside a line of business is expected to own the entire lifecycle of 
 ices it creates, including building, testing and releasing, supporting, and even decom‐
 missioning. A core delivery services team provides advice and guidance to these
 teams, as well as tooling to help it get the job done.
+
+---
+
+## Coming up with a vision for how things should be done without considering how your current staff will feel about this or without considering what capabilities they have is likely to lead to a bad place. How can we adress this issue?
+
+Each organization has its own set of dynamics around this topic. Understand your
+staff ’s appetite to change. Don’t push them too fast! Maybe you still have a separate
+team handle frontline support or deployment for a short period of time, giving your
+developers time to adjust to other new practices.
+
+---
+
+## In summary, How should we align our teams?
+
+This leads us to trying to align service ownership to colocated teams, which themselves are aligned around the same bounded contexts of the
+organization.

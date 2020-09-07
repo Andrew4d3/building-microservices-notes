@@ -144,3 +144,107 @@ to not only protect the consumer from the downstream problem, but also to potent
 The more one service depends on another being up, the more the health of one
 impacts the ability of the other to do its job. If we can use integration techniques that
 allow a downstream server to be offline, upstream services are less likely to be affected by outages, planned or unplanned
+
+---
+
+## What's an Idempotent operation?
+
+In idempotent operations, the outcome doesn’t change after the first application, even
+if the operation is subsequently applied multiple times. If operations are idempotent,
+we can repeat the call multiple times without adverse impact. This is very useful when
+we want to replay messages that we aren’t sure have been processed, a common way
+of recovering from error.
+
+---
+
+## When does using Idempotent operations work well?
+
+This mechanism works just as well with event-based collaboration, and can be especially useful if you have multiple instances of the same type of service subscribing to
+events. Even if we store which events have been processed, with some forms of asynchronous message delivery there may be small windows where two workers can see
+the same message. By processing the events in an idempotent manner, we ensure this
+won’t cause us any issues.
+
+---
+
+## Why is good to move microservices into their own hosts?
+
+As the microservices are independent
+processes that communicate over the network, it should be an easy task to then move
+them onto their own hosts to improve throughput and scaling. This can also increase
+the resiliency of the system, as a single host outage will impact a reduced number of
+microservices.
+
+---
+
+## What's important to consider when looking at SLA? (SLA stands for...?)
+
+If you’re using an underlying service provider, it is important to know if a service-level agreement (SLA) is offered and plan
+accordingly. If you need to ensure your services are down for no more than four
+hours every quarter, but your hosting provider can only guarantee a downtime of
+eight hours per quarter, you have to either change the SLA, or come up with an alternative solution.
+
+---
+
+## Explain VLAN
+
+One mitigation is to have all the instances of the microservice inside a single
+VLAN, as we see in Figure 11-5. A VLAN is a virtual local area network, that is isolated in such a way that requests from outside it can come only via a router, and in
+this case our router is also our SSL-terminating load balancer. The only communication to the microservice from outside the VLAN comes over HTTPS, but internally
+everything is HTTP.
+
+![image](https://user-images.githubusercontent.com/1868409/92339525-05685500-f08d-11ea-8fca-f72cdcc28bfb.png)
+
+---
+
+## Explain what Jeff Dean said in its presentation: "“Challenges in Building Large-Scale Information Retrieval Systems" (2)
+
+The architecture that gets you started may not be the architecture that keeps you
+going when your system has to handle very different volumes of load. As Jeff Dean
+said in his presentation “Challenges in Building Large-Scale Information Retrieval
+Systems” (WSDM 2009 conference), you should “design for ~10× growth, but plan to
+rewrite before ~100×.” At certain points, you need to do something pretty radical to
+support the next level of growth.
+
+---
+
+## Why is preparing our systems for a massive usage from the very beginning a bad idea?
+
+We need to be able to rapidly
+experiment, and understand what capabilities we need to build. If we tried building
+for massive scale up front, we’d end up front-loading a huge amount of work to prepare for load that may never come, while diverting effort away from more important
+activities, like understanding if anyone will want to actually use our product.
+
+---
+
+## How can we scale reads in relational databases? How is such setup called?
+
+In a relational database management system (RDBMS) like MySQL or Postgres, data
+can be copied from a primary node to one or more replicas. This is often done to
+ensure that a copy of our data is kept safe, but we can also use it to distribute our
+reads. A service could direct all writes to the single primary node, but distribute reads
+to one or more read replicas, as we see in Figure 11-6. The replication from the primary database to the replicas happens at some point after the write. This means that
+with this technique reads may sometimes see stale data until the replication has completed. Eventually the reads will see the consistent data. Such a setup is called eventually consistent, and if you can handle the temporary inconsistency it is a fairly easy
+and common way to help scale systems
+
+![image](https://user-images.githubusercontent.com/1868409/92339830-69d7e400-f08e-11ea-9961-0b324caad525.png)
+
+---
+
+## What approach do we have when scaling for writes?
+
+One approach is to use
+sharding. With sharding, you have multiple database nodes. You take a piece of data
+to be written, apply some hashing function to the key of the data, and based on the
+result of the function learn where to send the data. To pick a very simplistic (and
+actually bad) example, imagine that customer records A–M go to one database
+instance, and N–Z another.
+
+---
+
+## In short words, Explain CQRS
+
+The Command-Query Responsibility Segregation (CQRS) pattern refers to an alter‐
+nate model for storing and querying information. With normal databases, we use one
+system for performing modifications to data and querying the data. With CQRS, part
+of the system deals with commands, which capture requests to modify state, while
+another part of the system deals with queries.

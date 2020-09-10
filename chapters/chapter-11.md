@@ -248,3 +248,177 @@ nate model for storing and querying information. With normal databases, we use o
 system for performing modifications to data and querying the data. With CQRS, part
 of the system deals with commands, which capture requests to modify state, while
 another part of the system deals with queries.
+
+---
+
+## Explain Client-Side, Proxy and Server-side Caching
+
+-  In client-side caching, the client stores the cached result. The client gets to decide
+   when (and if) it goes and retrieves a fresh copy. Ideally, the downstream service will
+   provide hints to help the client understand what to do with the response, so it knows
+   when and if to make a new request.
+-  With proxy caching, a proxy is placed between
+   the client and the server. A great example of this is using a reverse proxy or content
+   delivery network (CDN).
+-  With server-side caching, the server handles caching
+   responsibility, perhaps making use of a system like Redis or Memcache, or even a
+   simple in-memory cache.
+
+---
+
+## Benefits of Client-side caching
+
+Clientside caching can help reduce network calls drastically, and can be one of the fastest
+ways of reducing load on a downstream service. In this case, the client is in charge of
+the caching behavior.
+
+---
+
+## Benefits of Proxy caching
+
+With proxy caching, everything is opaque to both the client and server. This is often a
+very simple way to add caching to an existing system. If the proxy is designed to
+cache generic traffic, it can also cache more than one service; a common example is a
+reverse proxy like Squid or Varnish, which can cache any HTTP traffic.
+
+---
+
+## Benefits of Server-side caching
+
+With a cache near or inside a service boundary, it can be easier
+to reason about things like invalidation of data, or track and optimize cache hits. In a
+situation where you have multiple types of clients, a server-side cache could be the
+fastest way to improve performance.
+
+---
+
+## How can we use HTTP headers in our caching systems?
+
+First, with HTTP, we can use cache-control directives in our responses to clients.
+These tell clients if they should cache the resource at all, and if so how long they
+should cache it for in seconds. We also have the option of setting an Expires header,
+where instead of saying how long a piece of content can be cached for, we specify a
+time and date at which a resource should be considered stale and fetched again.
+
+---
+
+## Explain the Guardian technique
+
+A technique I saw used at the Guardian, and subsequently elsewhere, was to crawl the
+existing live site periodically to generate a static version of the website that could be
+served in the event of an outage. Although this crawled version wasn’t as fresh as the
+cached content served from the live system, in a pinch it could ensure that a version
+of the site would get displayed.
+
+---
+
+## How can we avoid our services of getting flooded with requests if all the cache vanishes?
+
+One way to protect the origin in such a situation is never to allow requests to go to
+the origin in the first place. Instead, the origin itself populates the cache asynchro‐
+nously when needed, as shown in Figure 11-7. If a cache miss is caused, this triggers
+an event that the origin can pick up on, alerting it that it needs to repopulate the
+cache. So if an entire shard has vanished, we can rebuild the cache in the background.
+
+![image](https://user-images.githubusercontent.com/1868409/92422506-0617ee80-f154-11ea-9c45-38e787733dec.png)
+
+---
+
+## When applying cache, what do we have to be careful about?
+
+Be careful about caching in too many places! The more caches between you and the
+source of fresh data, the more stale the data can be, and the harder it can be to determine the freshness of the data that a client eventually sees. This can be especially
+problematic with a microservice architecture where you have multiple services
+involved in a call chain.
+
+---
+
+## What's a good advice when using Autoscaling?
+
+Both reactive and predictive scaling are very useful, and can help you be much more
+cost effective if you’re using a platform that allows you to pay only for the computing
+resources you use. But they also require careful observation of the data available to
+you. I’d suggest using autoscaling for failure conditions first while you collect the
+data. Once you want to start scaling for load, make sure you are very cautious about
+scaling down too quickly. In most situations, having more computing power at your
+hands than you need is much better than not having enough!
+
+---
+
+## Explain the CAP Theorem in short words
+
+At its heart it tells us that in a distributed system, we have three things we
+can trade off against each other: consistency, availability, and partition tolerance.
+Specifically, the theorem tells us that we get to keep two in a failure mode.
+
+---
+
+## How can we sacrfice consistency? What do we get by doing so?
+
+Let’s assume that we don’t shut the inventory service down entirely. If I make a
+change now to the data in DC1, the database in DC2 doesn’t see it. This means any
+requests made to our inventory node in DC2 see potentially stale data. In other
+words, our system is still available in that both nodes are able to serve requests, and
+we have kept the system running despite the partition, but we have lost consistency.
+This is often called a AP system. We don’t get to keep all three.
+
+---
+
+## How can we sacrfice availability? What do we get by doing so?
+
+Now in the partition, if the database nodes can’t talk to each other, they cannot coordinate to ensure consistency. We
+are unable to guarantee consistency, so our only option is to refuse to respond to the
+request. In other words, we have sacrificed availability. Our system is consistent and
+partition tolerant, or CP. In this mode our service would have to work out how to
+degrade functionality until the partition is healed and the database nodes can be
+resynchronized.
+
+---
+
+## What's a good advice when we want to achieve multinode consistency? What tool can we use?
+
+Getting multinode consistency right is so hard that I would strongly, strongly suggest
+that if you need it, don’t try to invent it yourself. Instead, pick a data store or lock
+service that offers these characteristics. Consul, for example, which we’ll discuss
+shortly, implements a strongly consistent key/value store designed to share configura‐
+tion between multiple nodes.
+
+---
+
+## So AP or CP?
+
+Without knowing the context in which the operation is being used, we can’t know the
+right thing to do. Knowing about the CAP theorem just helps you understand that
+this trade-off exists and what questions to ask.
+
+---
+
+## What about those posts claiming they have beaten the CAP theorem, are they true?
+
+You’ll often see posts about people beating the CAP theorem. They haven’t. What they
+have done is create a system where some capabilities are CP, and some are AP.
+
+---
+
+## Why is sometimes more convenient to go AP rather than CP?
+
+We have to recognize that no matter how consistent our systems might be in and of
+themselves, they cannot know everything that happens, especially when we’re keeping
+records of the real world. This is one of the main reasons why AP systems end up
+being the right call in many situations. Aside from the complexity of building CP systems, they can’t fix all our problems anyway.
+
+---
+
+## Good tool for generating documentation of our Microservices
+
+Swagger lets you describe your API in order to generate a very nice web UI that
+allows you to view the documentation and interact with the API via a web browser.
+The ability to execute requests is very nice: you can define POST templates, for exam‐
+ple, making it clear what sort of content the server expects.
+
+---
+
+## Whent to use HAL, and when to use Swagger?
+
+If you’re using hypermedia, my recommendation is to go with
+HAL over Swagger. But if you’re using hypermedia and can’t justify the switch, I’d definitely suggest giving Swagger a go.

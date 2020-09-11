@@ -421,4 +421,4 @@ ple, making it clear what sort of content the server expects.
 ## Whent to use HAL, and when to use Swagger?
 
 If you’re using hypermedia, my recommendation is to go with
-HAL over Swagger. But if you’re using hypermedia and can’t justify the switch, I’d definitely suggest giving Swagger a go.
+HAL over Swagger. But if you’re not using hypermedia and can’t justify the switch, I’d definitely suggest giving Swagger a go.

@@ -17,3 +17,4 @@ Book available for purchase [here](https://www.amazon.com/-/es/Sam-Newman/dp/149
 -  [Chapter 9: Security](/chapters/chapter-09.md)
 -  [Chapter 10: Conway’s Law and System Design](/chapters/chapter-10.md)
 -  [Chapter 11: Microservices at Scale](/chapters/chapter-11.md)
+-  [Chapter 12: Bringing It All Together](/chapters/chapter-12.md)

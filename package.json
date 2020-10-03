@@ -1,0 +1,26 @@
+{
+  "name": "building-microservices-notes",
+  "version": "1.0.0",
+  "description": "My personal notes for the book: Building Microservices by Sam Newman.",
+  "main": "none",
+  "scripts": {
+    "build-12": "markdown-to-anki chapters/chapter-12.md > chapter-12.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Andrew4d3/building-microservices-notes.git"
+  },
+  "keywords": [
+    "anki",
+    "microservices"
+  ],
+  "author": "Andrew4d3",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Andrew4d3/building-microservices-notes/issues"
+  },
+  "homepage": "https://github.com/Andrew4d3/building-microservices-notes#readme",
+  "dependencies": {
+    "markdown-to-anki": "^0.2.3"
+  }
+}
